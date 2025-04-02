@@ -116,7 +116,12 @@ body {
   border-bottom-color: rgba(255, 255, 255, 0.1);
   color: var(--text-high-contrast);
 }
-
+/* Özel olarak 'buraya yazın' placeholder'ı için */
+textarea::placeholder,
+.markdown-body .placeholder-text {
+  color: var(--muted-text) !important;
+  opacity: 1 !important;
+}
 /* Kod Blokları */
 pre, code {
   background-color: var(--code-bg);
