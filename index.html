@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Duvar</title>
-    <!-- Firebase SDK'ları -->
+    <!-- Firebase SDK'ları (v9+) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
     <style>
@@ -20,21 +20,20 @@
     <div id="notes"></div>
 
     <script>
-        // Firebase yapılandırmasını ekle
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDJCM2irwlzaublp9RQ0YiWOZBXj16LnXA",
-  authDomain: "githubionot.firebaseapp.com",
-  projectId: "githubionot",
-  storageBucket: "githubionot.firebasestorage.app",
-  messagingSenderId: "858312423900",
-  appId: "1:858312423900:web:13be8e6e00ada9506ff719",
-  measurementId: "G-K8VP1EJSSV"    }
+        // Firebase yapılandırmasını buraya ekle
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJCM2irwlzaublp9RQ0YiWOZBXj16LnXA",
+            authDomain: "githubionot.firebaseapp.com",
+            projectId: "githubionot",
+            storageBucket: "githubionot.firebasestorage.app",
+            messagingSenderId: "858312423900",
+            appId: "1:858312423900:web:13be8e6e00ada9506ff719",
+            measurementId: "G-K8VP1EJSSV"
         };
 
         // Firebase'i başlat
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
         // Not ekleme fonksiyonu
         function addNote() {
@@ -42,20 +41,21 @@ const firebaseConfig = {
             if (input.value.trim() === "") return;
 
             // Firestore'a not ekle
-            addDoc(collection(db, "notes"), {
+            db.collection("notes").add({
                 text: input.value
             }).then(() => {
                 input.value = ""; // Not ekledikten sonra inputu temizle
+            }).catch((error) => {
+                console.error("Not eklenirken hata oluştu: ", error);
             });
         }
 
         // Notları Firestore'dan çekme ve gösterme fonksiyonu
         function loadNotes() {
-            const q = query(collection(db, "notes"));
-            onSnapshot(q, (snapshot) => {
+            db.collection("notes").onSnapshot(snapshot => {
                 let notesDiv = document.getElementById("notes");
                 notesDiv.innerHTML = ""; // Önceki notları temizle
-                snapshot.forEach((doc) => {
+                snapshot.forEach(doc => {
                     let note = document.createElement("div");
                     note.className = "note";
                     note.textContent = doc.data().text;
@@ -67,7 +67,7 @@ const firebaseConfig = {
 
         // Not silme fonksiyonu
         function deleteNote(id) {
-            deleteDoc(doc(db, "notes", id)); // Firestore'dan notu sil
+            db.collection("notes").doc(id).delete(); // Firestore'dan notu sil
         }
 
         // Sayfa yüklendiğinde notları çek
