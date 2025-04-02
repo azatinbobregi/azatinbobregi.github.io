@@ -123,8 +123,8 @@ function renderNotes(notes) {
 // Not silme
 function deleteNote(id) {
     Swal.fire({
-        title: 'Emin misiniz?',
-        text: "Bu notu silmek istediğinize emin misiniz?",
+        title: 'Emin misin?',
+        text: "geri gelmez",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
