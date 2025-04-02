@@ -3,42 +3,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark light">
-    <title>duvar</title>
+    <meta name="color-scheme" content="dark light">
+    <title>Duvar</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-high-contrast: #ffffff;
+            --border-color: #444;
+            --primary-color: #bb86fc;
+            --secondary-color: #3700b3;
+            --danger-color: #cf6679;
+            --muted-text: #a0a0a0;
+            --placeholder-color: #a0a0a0;
+        }
+        
+        [data-theme="light"] {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-high-contrast: #000000;
+            --border-color: #e1e1e1;
+            --primary-color: #6e48aa;
+            --secondary-color: #9d50bb;
+            --danger-color: #dc3545;
+            --muted-text: #6c757d;
+            --placeholder-color: #6c757d;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-high-contrast);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-color: var(--border-color);
+            color: var(--text-high-contrast);
+            transition: all 0.3s ease;
+        }
+        
+        .note-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+        
+        .form-control {
+            background-color: var(--card-bg);
+            color: var(--text-high-contrast);
+            border-color: var(--border-color);
+        }
+        
+        textarea::placeholder {
+            color: var(--placeholder-color) !important;
+            opacity: 1 !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        #previewContainer img, #previewContainer video {
+            max-height: 200px;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        
+        .upload-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-btn input[type="file"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            cursor: inherit;
+            display: block;
+        }
+    </style>
 </head>
-<body>
-    <div class="container mt-5">
+<body data-theme="dark">
+    <div class="container py-4">
         <h1 class="text-center mb-4">Duvar</h1>
         
-        <div class="card mb-4">
+        <!-- Giriş Bölümü -->
+        <div id="authSection" class="card mb-4">
             <div class="card-body">
-                <form id="noteForm">
-                    <div class="mb-3">
-                        <textarea class="form-control" id="noteInput" rows="3" placeholder="buraya yazın..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Yazı Ekle</button>
-                </form>
+                <h5 class="card-title">Giriş Yap</h5>
+                <div class="mb-3">
+                    <input type="email" id="loginEmail" class="form-control" placeholder="E-posta">
+                </div>
+                <div class="mb-3">
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Şifre">
+                </div>
+                <button id="loginBtn" class="btn btn-primary">Giriş Yap</button>
+                <button id="registerBtn" class="btn btn-outline-secondary ms-2">Kayıt Ol</button>
             </div>
         </div>
         
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">duvar</h5>
-                <button id="refreshButton" class="btn btn-sm btn-secondary">Yenile</button>
+        <!-- Uygulama Bölümü -->
+        <div id="appSection" class="d-none">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="noteForm">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="noteInput" rows="3" 
+                                      placeholder="Duvarına bir şeyler yaz..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-outline-secondary upload-btn">
+                                <i class="bi bi-paperclip"></i> Dosya Ekle
+                                <input type="file" id="fileInput" accept="image/*,video/*">
+                            </button>
+                            <div id="previewContainer" class="mt-2"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send-fill"></i> Gönder
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <div id="notesContainer" class="notes-list">
-                    <p class="text-muted">yükleniyor...</p>
+            
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-chat-square-text"></i> Mesajlar</h5>
+                    <div>
+                        <button id="refreshBtn" class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </button>
+                        <button id="logoutBtn" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="notesContainer" class="notes-list">
+                        <p class="text-muted">Mesajlar yükleniyor...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- head kısmına bu scriptleri ekleyin -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <button id="themeToggle" class="theme-btn btn btn-primary shadow">
+        <i class="bi bi-moon"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="app.js"></script>
+    
+    <!-- Firebase Modüler SDK -->
+    <script type="module">
+        // Firebase modüler importlar
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+
+        // Firebase konfigürasyonu
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHhkTOoojqfEd0j2EJEUfhZkDh6rZltlE",
+            authDomain: "duvaruygulamasi.firebaseapp.com",
+            databaseURL: "https://duvaruygulamasi-default-rtdb.firebaseio.com",
+            projectId: "duvaruygulamasi",
+            storageBucket: "duvaruygulamasi.firebasestorage.app",
+            messagingSenderId: "378497156719",
+            appId: "1:378497156719:web:fea42c884ddd6f6e912f9a",
+            measurementId: "G-7D209PFJD7"
+        };
+
+        // Firebase'i başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const auth = getAuth(app);
+
+        // Tema Yönetimi
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon';
+        }
+
+        // Dosya Yönetimi
+        let selectedFile = null;
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const previewContainer = document.getElementById('previewContainer');
+                
+                if (file.type.startsWith('image/')) {
+                    previewContainer.innerHTML = `
+                        <div class="alert alert-info p-2 d-flex justify-content-between align-items-center">
+                            <span>${file.name}</span>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeFile()">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                        <img src="${URL.createObjectURL(file)}" class="img-thumbnail mt-2">`;
+                } else if (file.type.startsWith('video/')) {
+                    previewContainer.innerHTML = `
+                        <div class="alert alert-info p-2 d-flex justify-content-between align-items-center">
+                            <span>${file.name}</span>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeFile()">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                        <video controls class="img-thumbnail mt-2">
+                            <source src="${URL.createObjectURL(file)}" type="${file.type}">
+                        </video>`;
+                }
+            }
+        });
+
+        window.removeFile = () => {
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewContainer').innerHTML = '';
+        };
+
+        // Mesaj İşlemleri
+        async function addMessage(text) {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            try {
+                let fileUrl = null;
+                let fileType = null;
+                
+                if (selectedFile) {
+                    const storageRef = ref(storage, `uploads/${user.uid}/${Date.now()}_${selectedFile.name}`);
+                    const uploadTask = await uploadBytes(storageRef, selectedFile);
+                    fileUrl = await getDownloadURL(uploadTask.ref);
+                    fileType = selectedFile.type;
+                }
+
+                await addDoc(collection(db, 'messages'), {
+                    text: text,
+                    fileUrl: fileUrl,
+                    fileType: fileType,
+                    userId: user.uid,
+                    userName: user.displayName || user.email.split('@')[0],
+                    createdAt: new Date()
+                });
+
+                document.getElementById('noteInput').value = '';
+                removeFile();
+            } catch (error) {
+                console.error('Mesaj eklenemedi:', error);
+                alert('Mesaj gönderilemedi: ' + error.message);
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (confirm('Bu mesajı silmek istediğinize emin misiniz?')) {
+                try {
+                    await deleteDoc(doc(db, 'messages', id));
+                } catch (error) {
+                    console.error('Mesaj silinemedi:', error);
+                    alert('Mesaj silinemedi!');
+                }
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('notesContainer');
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<p class="text-muted">Henüz mesaj yok, ilk mesajı sen yaz!</p>';
+                return;
+            }
+
+            container.innerHTML = messages.map(msg => `
+                <div class="note-item mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="fw-bold">${msg.userName}</span>
+                        <small class="text-muted">${msg.createdAt.toLocaleString()}</small>
+                    </div>
+                    ${msg.text ? `<p class="mb-2">${msg.text}</p>` : ''}
+                    ${msg.fileUrl ? (
+                        msg.fileType.startsWith('image/') ? 
+                            `<img src="${msg.fileUrl}" class="img-fluid rounded mb-2" alt="Yüklenen dosya">` :
+                            `<video controls class="img-fluid rounded mb-2">
+                                <source src="${msg.fileUrl}" type="${msg.fileType}">
+                            </video>`
+                    ) : ''}
+                    ${auth.currentUser?.uid === msg.userId ? `
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteMessage('${msg.id}')">
+                            <i class="bi bi-trash"></i> Sil
+                        </button>
+                    </div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Kimlik Doğrulama
+        function setupAuth() {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    document.getElementById('authSection').classList.add('d-none');
+                    document.getElementById('appSection').classList.remove('d-none');
+                    loadMessages();
+                } else {
+                    document.getElementById('authSection').classList.remove('d-none');
+                    document.getElementById('appSection').classList.add('d-none');
+                }
+            });
+
+            document.getElementById('loginBtn').addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch (error) {
+                    alert('Giriş başarısız: ' + error.message);
+                }
+            });
+
+            document.getElementById('registerBtn').addEventListener('click', async () => {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                try {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert('Kayıt başarılı! Giriş yapıldı.');
+                } catch (error) {
+                    alert('Kayıt başarısız: ' + error.message);
+                }
+            });
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                signOut(auth);
+            });
+        }
+
+        // Veri Yükleme
+        function loadMessages() {
+            const q = query(
+                collection(db, 'messages'),
+                orderBy('createdAt', 'desc'),
+                limit(50)
+            );
+            
+            onSnapshot(q, (snapshot) => {
+                const messages = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    createdAt: doc.data().createdAt?.toDate() || new Date()
+                }));
+                renderMessages(messages);
+            }, (error) => {
+                console.error('Mesajlar yüklenemedi:', error);
+            });
+        }
+
+        // Uygulama Başlatma
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            setupAuth();
+            
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            
+            document.getElementById('noteForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = document.getElementById('noteInput').value.trim();
+                if (text || selectedFile) {
+                    await addMessage(text);
+                }
+            });
+            
+            document.getElementById('refreshBtn').addEventListener('click', loadMessages);
+            
+            // Dosya yükleme butonu için
+            document.querySelector('.upload-btn').addEventListener('click', function() {
+                document.getElementById('fileInput').click();
+            });
+        });
+
+        // Global fonksiyonlar
+        window.deleteMessage = deleteMessage;
+    </script>
 </body>
 </html>
