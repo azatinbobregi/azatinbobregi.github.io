@@ -1,0 +1,33 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.notes-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.note-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.note-item:hover {
+    background-color: #f8f9fa;
+}
+
+.note-item:last-child {
+    border-bottom: none;
+}
+
+.note-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.delete-btn {
+    cursor: pointer;
+    color: #dc3545;
+    float: right;
+}
