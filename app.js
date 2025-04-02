@@ -1,4 +1,7 @@
-
+// Kullanıcının sistem temasını algıla
+   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+     document.documentElement.setAttribute('data-theme', 'dark');
+   }
 // Tema kontrolü için localStorage kullanımı
 function initTheme() {
   const savedTheme = localStorage.getItem('theme') || 'dark';
