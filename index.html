@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duvar</title>
+    <!-- Firebase SDK'ları -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #container { max-width: 600px; margin: auto; }
+        .note { background: #fffa90; padding: 10px; margin: 5px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Duvar</h1>
+    <input type="text" id="noteInput" placeholder="Bir not ekle...">
+    <button onclick="addNote()">Ekle</button>
+    <div id="notes"></div>
+
+    <script>
+        // Firebase yapılandırmasını ekle
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJCM2irwlzaublp9RQ0YiWOZBXj16LnXA",
+            authDomain: "githubionot.firebaseapp.com",
+            projectId: "githubionot",
+            storageBucket: "githubionot.firebasestorage.app",
+            messagingSenderId: "858312423900",
+            appId: "1:858312423900:web:13be8e6e00ada9506ff719",
+            measurementId: "G-K8VP1EJSSV"
+        };
+
+        // Firebase'i başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Not ekleme fonksiyonu
+        function addNote() {
+            let input = document.getElementById("noteInput");
+            if (input.value.trim() === "") return;
+
+            // Firestore'a not ekle
+            addDoc(collection(db, "notes"), {
+                text: input.value
+            }).then(() => {
+                input.value = ""; // Not ekledikten sonra inputu temizle
+            });
+        }
+
+        // Notları Firestore'dan çekme ve gösterme fonksiyonu
+        function loadNotes() {
+            const q = query(collection(db, "notes"));
+            onSnapshot(q, (snapshot) => {
+                let notesDiv = document.getElementById("notes");
+                notesDiv.innerHTML = ""; // Önceki notları temizle
+                snapshot.forEach((doc) => {
+                    let note = document.createElement("div");
+                    note.className = "note";
+                    note.textContent = doc.data().text;
+                    note.onclick = () => deleteNote(doc.id);
+                    notesDiv.appendChild(note);
+                });
+            });
+        }
+
+        // Not silme fonksiyonu
+        function deleteNote(id) {
+            deleteDoc(doc(db, "notes", id)); // Firestore'dan notu sil
+        }
+
+        // Sayfa yüklendiğinde notları çek
+        loadNotes();
+    </script>
+</body>
+</html>
