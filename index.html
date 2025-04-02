@@ -3,39 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not Panosu</title>
+    <title>GitHub Not Panosu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Not Panosu</h1>
+        <h1 class="text-center mb-4">GitHub Not Panosu</h1>
         
-        <div class="card mb-4">
+        <div id="authSection" class="card mb-4">
             <div class="card-body">
-                <form id="noteForm">
-                    <div class="mb-3">
-                        <textarea class="form-control" id="noteInput" rows="3" placeholder="Notunuzu buraya yazın..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Not Ekle</button>
-                </form>
+                <h5 class="card-title">GitHub Girişi</h5>
+                <div class="mb-3">
+                    <input type="text" id="githubToken" class="form-control" placeholder="GitHub Personal Access Token">
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="repoName" class="form-control" placeholder="Repo Adı (örn: notlarim)">
+                </div>
+                <button id="authButton" class="btn btn-primary">Bağlan</button>
+                <p class="text-muted mt-2">Token oluşturmak için: Settings > Developer settings > Personal access tokens</p>
             </div>
         </div>
         
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Notlarım</h5>
+        <div id="appSection" class="d-none">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="noteForm">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="noteInput" rows="3" placeholder="Notunuzu buraya yazın..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Not Ekle</button>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <div id="notesContainer" class="notes-list">
-                    <!-- Notlar burada görüntülenecek -->
+            
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Notlarım</h5>
+                    <button id="refreshButton" class="btn btn-sm btn-secondary">Yenile</button>
+                </div>
+                <div class="card-body">
+                    <div id="notesContainer" class="notes-list">
+                        <p class="text-muted">Notlar yükleniyor...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK (Modüler versiyon) -->
-    <script type="module" src="app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
