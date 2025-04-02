@@ -1,12 +1,58 @@
+
+// Tema kontrolü için localStorage kullanımı
+function initTheme() {
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  
+  // Tema butonunu güncelle
+  updateThemeButton(savedTheme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  
+  updateThemeButton(newTheme);
+}
+
+function updateThemeButton(theme) {
+  const themeBtn = document.getElementById('themeToggle');
+  if (themeBtn) {
+    themeBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+    themeBtn.title = theme === 'dark' ? 'Light moda geç' : 'Dark moda geç';
+  }
+}
+
+// Uygulama başlangıcında tema yükleme
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  
+  // Tema değiştirme butonunu ekleyelim
+  const themeSwitcher = document.createElement('div');
+  themeSwitcher.className = 'theme-switcher';
+  themeSwitcher.innerHTML = `
+    <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button>
+  `;
+  document.body.appendChild(themeSwitcher);
+  
+  // Diğer uygulama kodları...
+});
+
+// Global fonksiyon olarak tanımlayalım
+window.toggleTheme = toggleTheme;
+
 // Basit veritabanı fonksiyonları
 const db = {
     save: (key, data) => {
         localStorage.setItem(key, JSON.stringify(data));
-        console.log(`Veri kaydedildi: ${key}`);
+        console.log(`kaydedildi: ${key}`);
     },
     load: (key) => {
         const data = JSON.parse(localStorage.getItem(key)) || [];
-        console.log(`Veri yüklendi: ${key}`, data);
+        console.log(`yüklendi: ${key}`, data);
         return data;
     }
 };
