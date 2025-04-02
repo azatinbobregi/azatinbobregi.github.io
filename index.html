@@ -304,37 +304,7 @@
             }
         }
 
-        function renderMessages(messages) {
-            const container = document.getElementById('notesContainer');
-            
-            if (messages.length === 0) {
-                container.innerHTML = '<p class="text-muted">Henüz mesaj yok, ilk mesajı sen yaz!</p>';
-                return;
-            }
-
-            container.innerHTML = messages.map(msg => `
-                <div class="note-item mb-3">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <span class="fw-bold">${msg.userName}</span>
-                        <small class="text-muted">${msg.createdAt.toLocaleString()}</small>
-                    </div>
-                    ${msg.text ? `<p class="mb-2">${msg.text}</p>` : ''}
-                    ${msg.fileUrl ? (
-                        msg.fileType.startsWith('image/') ? 
-                            `<img src="${msg.fileUrl}" class="img-fluid rounded mb-2" alt="Yüklenen dosya">` :
-                            `<video controls class="img-fluid rounded mb-2">
-                                <source src="${msg.fileUrl}" type="${msg.fileType}">
-                            </video>`
-                    ) : ''}
-                    ${auth.currentUser?.uid === msg.userId ? `
-                    <div class="text-end">
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteMessage('${msg.id}')">
-                            <i class="bi bi-trash"></i> Sil
-                        </button>
-                    </div>` : ''}
-                </div>
-            `).join('');
-        }
+        
 
         // Kimlik Doğrulama
         function setupAuth() {
@@ -346,7 +316,39 @@
                 } else {
                     document.getElementById('authSection').classList.remove('d-none');
                     document.getElementById('appSection').classList.add('d-none');
-                }
+    function renderMessages(messages) {
+    const container = document.getElementById('notesContainer');
+    
+    if (messages.length === 0) {
+        container.innerHTML = '<p class="text-muted">Henüz mesaj yok, ilk mesajı sen yaz!</p>';
+        return;
+    }
+
+    container.innerHTML = messages.map(msg => `
+        <div class="note-item mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="fw-bold">
+                    ${msg.userName}
+                    <small class="text-muted" style="font-size: 0.8em; margin-left: 5px;">(${msg.createdAt.toLocaleString()})</small>
+                </span>
+            </div>
+            ${msg.text ? `<p class="mb-2">${msg.text}</p>` : ''}
+            ${msg.fileUrl ? (
+                msg.fileType.startsWith('image/') ? 
+                    `<img src="${msg.fileUrl}" class="img-fluid rounded mb-2" alt="Yüklenen dosya">` :
+                    `<video controls class="img-fluid rounded mb-2">
+                        <source src="${msg.fileUrl}" type="${msg.fileType}">
+                    </video>`
+            ) : ''}
+            ${auth.currentUser?.uid === msg.userId ? `
+            <div class="text-end">
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteMessage('${msg.id}')">
+                    <i class="bi bi-trash"></i> Sil
+                </button>
+            </div>` : ''}
+        </div>
+    `).join('');
+        }        }
             });
 
             document.getElementById('loginBtn').addEventListener('click', async () => {
