@@ -1,8 +1,8 @@
 // GitHub API Konfigürasyonu
 const config = {
     token: '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', // BU TOKEN'İ DİKKATLİ KULLANIN
-    repo: 'notlarim', // Kullanmak istediğiniz repo adı
-    username: 'kullaniciadiniz' // GitHub kullanıcı adınız
+    repo: 'azatinbobregi.github.io', // Kullanmak istediğiniz repo adı
+    username: 'azatinbobregi' // GitHub kullanıcı adınız
 };
 
 // DOM Elementleri
